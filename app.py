@@ -20,13 +20,16 @@ if IS_PRODUCTION:
     db_host = os.getenv('DB_HOST')
     db_port = os.getenv('DB_PORT', '3306')
     db_name = os.getenv('DB_NAME')
+    ssl_ca = os.getenv('SSL_CA_PATH')
 
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
     # Azure MySQL用のSSL設定を修正
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'connect_args': {
-            'ssl': {'ssl-mode': 'preferred'}
+            'ssl': {
+                'ca': ssl_ca
+            }
         }
     }
 else:
