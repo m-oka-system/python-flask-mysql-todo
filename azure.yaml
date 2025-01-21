@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/alpha/azure.yaml.json
+
+name: todo-python-flask-mysql
+infra:
+  provider: terraform
+services:
+  web:
+    project: ./src
+    language: python
+    host: appservice
