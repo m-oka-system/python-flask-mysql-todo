@@ -5,9 +5,10 @@
 crash.log
 crash.*.log
 
-# 変数ファイル
+# 変数ファイル（main.tfvars.jsonは除く）
 *.tfvars
 *.tfvars.json
+!main.tfvars.json
 override.tf
 override.tf.json
 *_override.tf
