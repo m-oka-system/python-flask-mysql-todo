@@ -68,5 +68,5 @@ resource "azurerm_linux_web_app" "webapp" {
     }
   }
 
-  tags = local.tags
+  tags = merge(local.tags, { azd-service-name : "web" })
 }
