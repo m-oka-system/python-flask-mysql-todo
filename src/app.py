@@ -20,29 +20,10 @@ if IS_PRODUCTION:
     db_host = os.getenv('DB_HOST')
     db_port = os.getenv('DB_PORT', '3306')
     db_name = os.getenv('DB_NAME')
-    ssl_ca = os.getenv('SSL_CA_PATH')
+    ssl_ca = os.getenv('SSL_CA', "DigiCertGlobalRootCA.crt.pem")
 
-    # SSL接続の有効/無効を環境変数で制御
-    use_ssl = os.getenv('MYSQL_USE_SSL', 'True').lower() == 'true'
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?ssl_ca={ssl_ca}"
 
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-
-    if use_ssl:
-        # SSL接続を使用する場合の設定
-        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-            'connect_args': {
-                'ssl': {
-                    'ca': ssl_ca
-                }
-            }
-        }
-    else:
-        # SSL接続を無効にする場合の設定
-        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-            'connect_args': {
-                'ssl_disabled': True
-            }
-        }
 else:
     # 開発環境（SQLite）の設定
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLITE_URL', 'sqlite:///todo.db')
