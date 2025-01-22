@@ -37,7 +37,7 @@ resource "azurecaf_name" "webapp_name" {
 }
 
 resource "azurerm_service_plan" "asp" {
-  name                = azurecaf_name.webapp_name.result
+  name                = azurecaf_name.asp_name.result
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
   os_type             = var.app_service_plan.os_type
