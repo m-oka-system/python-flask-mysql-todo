@@ -55,11 +55,12 @@ resource "azurerm_linux_web_app" "webapp" {
   public_network_access_enabled = true
 
   app_settings = {
-    "DB_HOST"     = ""
-    "DB_NAME"     = ""
-    "DB_USER"     = ""
-    "DB_PASSWORD" = ""
-    "DB_PORT"     = ""
+    "IS_PRODUCTION"                  = "true"
+    "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
+    "DB_HOST"                        = azurerm_mysql_flexible_server.mysql.fqdn
+    "DB_USER"                        = azurerm_mysql_flexible_server.mysql.administrator_login
+    "DB_PASSWORD"                    = random_password.password[0].result
+    "DB_NAME"                        = azurerm_mysql_flexible_database.db.name
   }
 
   site_config {
@@ -69,4 +70,60 @@ resource "azurerm_linux_web_app" "webapp" {
   }
 
   tags = merge(local.tags, { azd-service-name : "web" })
+}
+
+# ------------------------------------------------------------------------------------------------------
+# Azure Database for MySQL Flexible Server
+# ------------------------------------------------------------------------------------------------------
+resource "azurecaf_name" "mysql_name" {
+  name          = var.environment_name
+  resource_type = "azurerm_mysql_server"
+  random_length = 0
+  clean_input   = true
+}
+
+resource "random_password" "password" {
+  count       = 1
+  length      = 16
+  min_lower   = 1
+  min_upper   = 1
+  min_numeric = 1
+  special     = false
+}
+
+resource "azurerm_mysql_flexible_server" "mysql" {
+  name                         = azurecaf_name.mysql_name.result
+  resource_group_name          = azurerm_resource_group.rg.name
+  location                     = var.location
+  administrator_login          = var.mysql.administrator_login
+  administrator_password       = random_password.password[0].result
+  sku_name                     = var.mysql.sku_name
+  version                      = var.mysql.version
+  zone                         = var.mysql.zone
+  backup_retention_days        = var.mysql.backup_retention_days
+  geo_redundant_backup_enabled = var.mysql.geo_redundant_backup_enabled
+
+  storage {
+    auto_grow_enabled = var.mysql.storage.auto_grow_enabled
+    iops              = var.mysql.storage.iops
+    size_gb           = var.mysql.storage.size_gb
+  }
+
+  tags = local.tags
+}
+
+resource "azurerm_mysql_flexible_database" "db" {
+  name                = var.mysql_database.name
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_mysql_flexible_server.mysql.name
+  charset             = var.mysql_database.charset
+  collation           = var.mysql_database.collation
+}
+
+resource "azurerm_mysql_flexible_server_firewall_rule" "firewall_rule" {
+  name                = "AllowAllAzureServicesAndResourcesWithinAzureIps"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_mysql_flexible_server.mysql.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
 }
