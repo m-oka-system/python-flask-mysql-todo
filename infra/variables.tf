@@ -3,8 +3,7 @@ variable "environment_name" {
 }
 
 variable "location" {
-  type    = string
-  default = "japaneast"
+  type = string
 }
 
 variable "app_service_plan" {
