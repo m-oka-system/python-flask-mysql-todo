@@ -73,3 +73,39 @@ variable "key_vault" {
     soft_delete_retention_days = 7
   }
 }
+
+variable "vnet" {
+  type = map(list(string))
+  default = {
+    address_space = ["10.0.0.0/16"]
+  }
+}
+
+variable "subnets" {
+  type = map(object({
+    name             = string
+    address_prefixes = list(string)
+  }))
+  default = {
+    pe = {
+      name             = "pe"
+      address_prefixes = ["10.0.0.0/24"]
+    }
+    app = {
+      name             = "app"
+      address_prefixes = ["10.0.1.0/24"]
+    }
+    db = {
+      name             = "db"
+      address_prefixes = ["10.0.2.0/24"]
+    }
+    vm = {
+      name             = "vm"
+      address_prefixes = ["10.0.3.0/24"]
+    }
+    bastion = {
+      name             = "AzureBastionSubnet"
+      address_prefixes = ["10.0.4.0/24"]
+    }
+  }
+}

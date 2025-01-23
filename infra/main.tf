@@ -114,3 +114,23 @@ resource "azurerm_key_vault" "key_vault" {
 
   tags = local.tags
 }
+
+# ------------------------------------------------------------------------------------------------------
+# Virtual Network
+# ------------------------------------------------------------------------------------------------------
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vnet-${var.environment_name}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  address_space       = var.vnet.address_space
+
+  tags = local.tags
+}
+
+resource "azurerm_subnet" "subnet" {
+  for_each             = var.subnets
+  name                 = "snet-${each.value.name}"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = each.value.address_prefixes
+}
