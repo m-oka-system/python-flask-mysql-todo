@@ -1,33 +1,4 @@
-# Python
-__pycache__/
-*.py[cod]
-*.so
-.Python
-env/
+__pycache__/*
+.venv/*
 .env
-.venv/
-venv/
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# データベース
-instance/
-*.db
-*.sqlite
-*.sqlite3
-
-# 環境変数
-.env
-.env.*
-
-# Flask
-.webassets-cache
-
-# ログ
-*.log
+instance/*
