@@ -98,3 +98,19 @@ resource "azurerm_mysql_flexible_server_firewall_rule" "firewall_rule" {
   start_ip_address    = "0.0.0.0"
   end_ip_address      = "0.0.0.0"
 }
+
+# ------------------------------------------------------------------------------------------------------
+# Azure Key Vault
+# ------------------------------------------------------------------------------------------------------
+resource "azurerm_key_vault" "key_vault" {
+  name                       = "kv-${var.environment_name}-${random_integer.num.result}"
+  resource_group_name        = azurerm_resource_group.rg.name
+  location                   = var.location
+  sku_name                   = var.key_vault.sku_name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  enable_rbac_authorization  = var.key_vault.enable_rbac_authorization
+  purge_protection_enabled   = var.key_vault.purge_protection_enabled
+  soft_delete_retention_days = var.key_vault.soft_delete_retention_days
+
+  tags = local.tags
+}

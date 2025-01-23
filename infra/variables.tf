@@ -58,3 +58,18 @@ variable "mysql_database" {
     collation = "utf8mb4_0900_ai_ci"
   }
 }
+
+variable "key_vault" {
+  type = object({
+    sku_name                   = string
+    enable_rbac_authorization  = bool
+    purge_protection_enabled   = bool
+    soft_delete_retention_days = number
+  })
+  default = {
+    sku_name                   = "standard"
+    enable_rbac_authorization  = true
+    purge_protection_enabled   = false
+    soft_delete_retention_days = 7
+  }
+}
