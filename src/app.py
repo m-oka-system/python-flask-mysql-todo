@@ -23,10 +23,10 @@ if IS_PRODUCTION:
     ssl_ca = os.getenv('SSL_CA', "DigiCertGlobalRootCA.crt.pem")
 
     # SSL接続の有効/無効を環境変数で制御
-    use_ssl = os.getenv('MYSQL_USE_SSL', 'True').lower() == 'true'
+    db_ssl_enabled = os.getenv('DB_SSL_ENABLED', 'True').lower() == 'true'
 
     # SSL設定に基づいてデータベースURIを構築
-    if use_ssl:
+    if db_ssl_enabled:
         SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?ssl_ca={ssl_ca}"
     else:
         SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
