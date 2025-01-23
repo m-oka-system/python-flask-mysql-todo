@@ -5,15 +5,8 @@ locals {
 # ------------------------------------------------------------------------------------------------------
 # Resource Group
 # ------------------------------------------------------------------------------------------------------
-resource "azurecaf_name" "rg_name" {
-  name          = var.environment_name
-  resource_type = "azurerm_resource_group"
-  random_length = 0
-  clean_input   = true
-}
-
 resource "azurerm_resource_group" "rg" {
-  name     = azurecaf_name.rg_name.result
+  name     = "rg-${var.environment_name}"
   location = var.location
 
   tags = local.tags
@@ -22,22 +15,8 @@ resource "azurerm_resource_group" "rg" {
 # ------------------------------------------------------------------------------------------------------
 # App Service
 # ------------------------------------------------------------------------------------------------------
-resource "azurecaf_name" "asp_name" {
-  name          = var.environment_name
-  resource_type = "azurerm_app_service_plan"
-  random_length = 0
-  clean_input   = true
-}
-
-resource "azurecaf_name" "webapp_name" {
-  name          = var.environment_name
-  resource_type = "azurerm_app_service"
-  random_length = 0
-  clean_input   = true
-}
-
 resource "azurerm_service_plan" "asp" {
-  name                = azurecaf_name.asp_name.result
+  name                = "asp-${var.environment_name}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
   os_type             = var.app_service_plan.os_type
@@ -47,7 +26,7 @@ resource "azurerm_service_plan" "asp" {
 }
 
 resource "azurerm_linux_web_app" "webapp" {
-  name                          = azurecaf_name.webapp_name.result
+  name                          = "app-${var.environment_name}-${random_integer.num.result}"
   resource_group_name           = azurerm_resource_group.rg.name
   location                      = var.location
   service_plan_id               = azurerm_service_plan.asp.id
@@ -74,13 +53,6 @@ resource "azurerm_linux_web_app" "webapp" {
 # ------------------------------------------------------------------------------------------------------
 # Azure Database for MySQL Flexible Server
 # ------------------------------------------------------------------------------------------------------
-resource "azurecaf_name" "mysql_name" {
-  name          = var.environment_name
-  resource_type = "azurerm_mysql_server"
-  random_length = 0
-  clean_input   = true
-}
-
 resource "random_password" "password" {
   count       = 1
   length      = 16
@@ -91,7 +63,7 @@ resource "random_password" "password" {
 }
 
 resource "azurerm_mysql_flexible_server" "mysql" {
-  name                         = azurecaf_name.mysql_name.result
+  name                         = "mysql-${var.environment_name}-${random_integer.num.result}"
   resource_group_name          = azurerm_resource_group.rg.name
   location                     = var.location
   administrator_login          = var.mysql.administrator_login

@@ -5,9 +5,9 @@ terraform {
       version = "~>4.0"
       source  = "hashicorp/azurerm"
     }
-    azurecaf = {
-      source  = "aztfmod/azurecaf"
-      version = "~>1.2.28"
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6"
     }
   }
 }
@@ -31,3 +31,8 @@ provider "azurerm" {
 }
 
 data "azurerm_client_config" "current" {}
+
+resource "random_integer" "num" {
+  min = 10000
+  max = 99999
+}
