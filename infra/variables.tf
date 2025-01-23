@@ -109,3 +109,23 @@ variable "subnets" {
     }
   }
 }
+
+variable "network_security_groups" {
+  type = map(object({
+    name = string
+  }))
+  default = {
+    pe = {
+      name = "pe"
+    }
+    app = {
+      name = "app"
+    }
+    db = {
+      name = "db"
+    }
+    vm = {
+      name = "vm"
+    }
+  }
+}
