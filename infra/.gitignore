@@ -4,6 +4,7 @@
 *.tfstate.*
 crash.log
 crash.*.log
+.terraform.lock.hcl
 
 # 変数ファイル（main.tfvars.jsonは除く）
 *.tfvars
