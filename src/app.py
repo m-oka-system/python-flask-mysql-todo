@@ -11,7 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # 本番環境かどうかを判定
-IS_PRODUCTION = os.getenv('IS_PRODUCTION', 'False').lower() == 'true'
+IS_PRODUCTION = os.getenv('IS_PRODUCTION', 'True').lower() == 'true'
 
 if IS_PRODUCTION:
     # 本番環境（Azure MySQL）の設定
