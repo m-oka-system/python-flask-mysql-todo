@@ -34,8 +34,10 @@ resource "azurerm_linux_web_app" "webapp" {
   public_network_access_enabled = true
 
   app_settings = {
+    "IS_PRODUCTION"                  = "true"
     "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
     "DB_HOST"                        = azurerm_mysql_flexible_server.mysql.fqdn
+    "DB_PORT"                        = "3306"
     "DB_USER"                        = azurerm_mysql_flexible_server.mysql.administrator_login
     "DB_PASSWORD"                    = random_password.password[0].result
     "DB_NAME"                        = azurerm_mysql_flexible_database.db.name
