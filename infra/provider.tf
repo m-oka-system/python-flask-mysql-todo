@@ -16,8 +16,8 @@ provider "azurerm" {
   # サブスクリプション ID (環境変数 ARM_SUBSCRIPTION_ID を設定していない場合は必要)
   # subscription_id = "00000000-0000-0000-0000-000000000000"
 
-  # リソースプロバイダーの自動登録を無効にする
-  resource_provider_registrations = "none"
+  # リソースプロバイダーの自動登録を有効にする
+  resource_provider_registrations = "all"
   features {
     key_vault {
       # Azure Key Vault の論理削除を無効にする
