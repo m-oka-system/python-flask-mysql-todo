@@ -18,6 +18,15 @@ provider "azurerm" {
 
   # リソースプロバイダーの自動登録を無効にする
   resource_provider_registrations = "none"
+
+  # リソースプロバイダーの登録を手動で行う
+  resource_providers_to_register = [
+    "Microsoft.Advisor",
+    "Microsoft.DBforMySQL",
+    "Microsoft.KeyVault",
+    "Microsoft.Network",
+    "Microsoft.Web",
+  ]
   features {
     key_vault {
       # Azure Key Vault の論理削除を無効にする
