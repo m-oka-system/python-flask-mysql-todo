@@ -127,5 +127,103 @@ variable "network_security_groups" {
     vm = {
       name = "vm"
     }
+    bastion = {
+      name = "bastion"
+    }
+  }
+}
+
+variable "bastion_security_rules" {
+  type = map(object({
+    priority                   = number
+    protocol                   = string
+    destination_port_ranges    = list(string)
+    source_address_prefix      = string
+    destination_address_prefix = string
+    direction                  = string
+    access                     = string
+    source_port_range          = string
+  }))
+  default = {
+    AllowHttpsInbound = {
+      priority                   = 120
+      protocol                   = "Tcp"
+      destination_port_ranges    = ["443"]
+      source_address_prefix      = "Internet"
+      destination_address_prefix = "*"
+      direction                  = "Inbound"
+      access                     = "Allow"
+      source_port_range          = "*"
+    }
+    AllowGatewayManagerInbound = {
+      priority                   = 130
+      protocol                   = "Tcp"
+      destination_port_ranges    = ["443"]
+      source_address_prefix      = "GatewayManager"
+      destination_address_prefix = "*"
+      direction                  = "Inbound"
+      access                     = "Allow"
+      source_port_range          = "*"
+    }
+    AllowAzureLoadBalancerInbound = {
+      priority                   = 140
+      protocol                   = "Tcp"
+      destination_port_ranges    = ["443"]
+      source_address_prefix      = "AzureLoadBalancer"
+      destination_address_prefix = "*"
+      direction                  = "Inbound"
+      access                     = "Allow"
+      source_port_range          = "*"
+    }
+    AllowBastionHostCommunication = {
+      priority                   = 150
+      protocol                   = "*"
+      destination_port_ranges    = ["8080", "5701"]
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "VirtualNetwork"
+      direction                  = "Inbound"
+      access                     = "Allow"
+      source_port_range          = "*"
+    }
+    AllowSshRdpOutbound = {
+      priority                   = 100
+      protocol                   = "*"
+      destination_port_ranges    = ["22", "3389"]
+      source_address_prefix      = "*"
+      destination_address_prefix = "VirtualNetwork"
+      direction                  = "Outbound"
+      access                     = "Allow"
+      source_port_range          = "*"
+    }
+    AllowAzureCloudOutbound = {
+      priority                   = 110
+      protocol                   = "Tcp"
+      destination_port_ranges    = ["443"]
+      source_address_prefix      = "*"
+      destination_address_prefix = "AzureCloud"
+      direction                  = "Outbound"
+      access                     = "Allow"
+      source_port_range          = "*"
+    }
+    AllowBastionCommunication = {
+      priority                   = 120
+      protocol                   = "*"
+      destination_port_ranges    = ["8080", "5701"]
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "VirtualNetwork"
+      direction                  = "Outbound"
+      access                     = "Allow"
+      source_port_range          = "*"
+    }
+    AllowHttpOutbound = {
+      priority                   = 130
+      protocol                   = "*"
+      destination_port_ranges    = ["80"]
+      source_address_prefix      = "*"
+      destination_address_prefix = "Internet"
+      direction                  = "Outbound"
+      access                     = "Allow"
+      source_port_range          = "*"
+    }
   }
 }
