@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/alpha/azure.yaml.json
 
-name: todo-python-flask-mysql
+name: python-flask-mysql-todo
 infra:
   provider: terraform
 services:
