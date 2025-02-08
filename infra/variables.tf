@@ -83,29 +83,35 @@ variable "vnet" {
 
 variable "subnets" {
   type = map(object({
-    name             = string
-    address_prefixes = list(string)
+    name                            = string
+    address_prefixes                = list(string)
+    default_outbound_access_enabled = bool
   }))
   default = {
     pe = {
-      name             = "pe"
-      address_prefixes = ["10.0.0.0/24"]
+      name                            = "pe"
+      address_prefixes                = ["10.0.0.0/24"]
+      default_outbound_access_enabled = true
     }
     app = {
-      name             = "app"
-      address_prefixes = ["10.0.1.0/24"]
+      name                            = "app"
+      address_prefixes                = ["10.0.1.0/24"]
+      default_outbound_access_enabled = true
     }
     db = {
-      name             = "db"
-      address_prefixes = ["10.0.2.0/24"]
+      name                            = "db"
+      address_prefixes                = ["10.0.2.0/24"]
+      default_outbound_access_enabled = true
     }
     vm = {
-      name             = "vm"
-      address_prefixes = ["10.0.3.0/24"]
+      name                            = "vm"
+      address_prefixes                = ["10.0.3.0/24"]
+      default_outbound_access_enabled = false
     }
     bastion = {
-      name             = "AzureBastionSubnet"
-      address_prefixes = ["10.0.4.0/24"]
+      name                            = "AzureBastionSubnet"
+      address_prefixes                = ["10.0.4.0/24"]
+      default_outbound_access_enabled = true
     }
   }
 }

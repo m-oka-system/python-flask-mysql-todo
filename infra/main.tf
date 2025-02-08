@@ -130,11 +130,12 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "subnet" {
-  for_each             = var.subnets
-  name                 = each.key == "bastion" ? each.value.name : "snet-${each.value.name}"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = each.value.address_prefixes
+  for_each                        = var.subnets
+  name                            = each.key == "bastion" ? each.value.name : "snet-${each.value.name}"
+  resource_group_name             = azurerm_resource_group.rg.name
+  virtual_network_name            = azurerm_virtual_network.vnet.name
+  address_prefixes                = each.value.address_prefixes
+  default_outbound_access_enabled = each.value.default_outbound_access_enabled
 }
 
 # ------------------------------------------------------------------------------------------------------
