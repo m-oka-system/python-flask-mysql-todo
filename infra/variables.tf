@@ -196,6 +196,17 @@ variable "bastion_security_rules" {
       access                     = "Allow"
       source_port_range          = "*"
     }
+    DenyAllInbound = {
+      priority                   = 4096
+      protocol                   = "*"
+      destination_port_range     = "*"
+      destination_port_ranges    = null
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+      direction                  = "Inbound"
+      access                     = "Deny"
+      source_port_range          = "*"
+    }
     AllowSshRdpOutbound = {
       priority                   = 100
       protocol                   = "*"
@@ -238,6 +249,17 @@ variable "bastion_security_rules" {
       destination_address_prefix = "Internet"
       direction                  = "Outbound"
       access                     = "Allow"
+      source_port_range          = "*"
+    }
+    DenyAllOutbound = {
+      priority                   = 4096
+      protocol                   = "*"
+      destination_port_range     = "*"
+      destination_port_ranges    = null
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+      direction                  = "Outbound"
+      access                     = "Deny"
       source_port_range          = "*"
     }
   }
