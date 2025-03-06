@@ -21,7 +21,7 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 
 # bash/zshの場合
-source .venv/bin/activate
+source .venv/Scripts/activate
 ```
 
 3. 依存パッケージのインストール
