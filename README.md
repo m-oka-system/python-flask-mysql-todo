@@ -51,6 +51,7 @@ azd up
 # Azure Developer CLI で全リソースを削除
 azd down
 
+# もしくは
 # Azure CLI でリソースグループを削除
 az group delete --name <resource-group-name> --yes
 ```
