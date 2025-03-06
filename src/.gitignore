@@ -36,7 +36,6 @@ instance/
 
 # 環境変数
 .env
-.env.*
 
 # IDE/エディタ
 .idea/
