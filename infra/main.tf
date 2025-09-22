@@ -110,7 +110,7 @@ resource "azurerm_key_vault" "key_vault" {
   location                   = var.location
   sku_name                   = var.key_vault.sku_name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
-  rbac_authorization_enabled = var.key_vault.rbac_authorization_enabled
+  enable_rbac_authorization  = var.key_vault.enable_rbac_authorization
   purge_protection_enabled   = var.key_vault.purge_protection_enabled
   soft_delete_retention_days = var.key_vault.soft_delete_retention_days
 

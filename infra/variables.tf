@@ -62,13 +62,13 @@ variable "mysql_database" {
 variable "key_vault" {
   type = object({
     sku_name                   = string
-    rbac_authorization_enabled = bool
+    enable_rbac_authorization  = bool
     purge_protection_enabled   = bool
     soft_delete_retention_days = number
   })
   default = {
     sku_name                   = "standard"
-    rbac_authorization_enabled = true
+    enable_rbac_authorization  = true
     purge_protection_enabled   = false
     soft_delete_retention_days = 7
   }
