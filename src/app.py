@@ -21,8 +21,9 @@ if IS_PRODUCTION:
     db_port = os.getenv('DB_PORT', '3306')
     db_name = os.getenv('DB_NAME')
 
-    # 2025 年 9 月 1 日以降、Azure Database for MySQL フレキシブル サーバーのルート証明書が DigiCert Global Root G2 / Microsoft RSA Root Certificate Authority 2017 に置き換えられる
-    # https://learn.microsoft.com/ja-jp/azure/mysql/flexible-server/concepts-root-certificate-rotation
+    # Azure Database for MySQL フレキシブル サーバーのルート証明書は 2025 年 9 月 1 日以降に DigiCert Global Root G2 / Microsoft RSA Root Certificate Authority 2017 に置き換えられます。
+    # combined-ca-certificates.pem は、証明書ローテーションの移行期間中（前・最中・後）に旧・新両方のルート証明書に対応し、互換性を確保します。
+    # 詳細: https://learn.microsoft.com/ja-jp/azure/mysql/flexible-server/concepts-root-certificate-rotation
     ssl_ca = os.getenv('SSL_CA', "combined-ca-certificates.pem")
 
     # SSL接続の有効/無効を環境変数で制御
