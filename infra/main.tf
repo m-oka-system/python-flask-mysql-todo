@@ -72,7 +72,6 @@ resource "azurerm_mysql_flexible_server" "mysql" {
   administrator_password       = random_password.password[0].result
   sku_name                     = var.mysql.sku_name
   version                      = var.mysql.version
-  zone                         = var.mysql.zone
   backup_retention_days        = var.mysql.backup_retention_days
   geo_redundant_backup_enabled = var.mysql.geo_redundant_backup_enabled
 
