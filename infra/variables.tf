@@ -26,7 +26,6 @@ variable "mysql" {
     administrator_login          = string
     sku_name                     = string
     version                      = string
-    zone                         = string
     backup_retention_days        = number
     geo_redundant_backup_enabled = bool
     storage = object({
@@ -38,8 +37,7 @@ variable "mysql" {
   default = {
     administrator_login          = "sqladmin"
     sku_name                     = "B_Standard_B1ms"
-    version                      = "8.0.21"
-    zone                         = "1"
+    version                      = "8.4"
     backup_retention_days        = 7
     geo_redundant_backup_enabled = false
     storage = {
@@ -62,13 +60,13 @@ variable "mysql_database" {
 variable "key_vault" {
   type = object({
     sku_name                   = string
-    enable_rbac_authorization  = bool
+    rbac_authorization_enabled = bool
     purge_protection_enabled   = bool
     soft_delete_retention_days = number
   })
   default = {
     sku_name                   = "standard"
-    enable_rbac_authorization  = true
+    rbac_authorization_enabled = true
     purge_protection_enabled   = false
     soft_delete_retention_days = 7
   }
@@ -119,6 +117,17 @@ variable "subnets" {
 variable "network_security_groups" {
   type = map(object({
     name = string
+    rules = optional(map(object({
+      priority                   = number
+      protocol                   = string
+      destination_port_range     = string       # 複数ポートを指定する場合は null
+      destination_port_ranges    = list(string) # 単一ポートを指定する場合は null
+      source_address_prefix      = string
+      destination_address_prefix = string
+      direction                  = string
+      access                     = string
+      source_port_range          = string
+    })), {})
   }))
   default = {
     pe = {
@@ -135,132 +144,118 @@ variable "network_security_groups" {
     }
     bastion = {
       name = "bastion"
-    }
-  }
-}
-
-variable "bastion_security_rules" {
-  type = map(object({
-    priority                   = number
-    protocol                   = string
-    destination_port_range     = string       # 複数ポートを指定する場合は null
-    destination_port_ranges    = list(string) # 単一ポートを指定する場合は null
-    source_address_prefix      = string
-    destination_address_prefix = string
-    direction                  = string
-    access                     = string
-    source_port_range          = string
-  }))
-  default = {
-    AllowHttpsInbound = {
-      priority                   = 120
-      protocol                   = "Tcp"
-      destination_port_range     = "443"
-      destination_port_ranges    = null
-      source_address_prefix      = "Internet"
-      destination_address_prefix = "*"
-      direction                  = "Inbound"
-      access                     = "Allow"
-      source_port_range          = "*"
-    }
-    AllowGatewayManagerInbound = {
-      priority                   = 130
-      protocol                   = "Tcp"
-      destination_port_range     = "443"
-      destination_port_ranges    = null
-      source_address_prefix      = "GatewayManager"
-      destination_address_prefix = "*"
-      direction                  = "Inbound"
-      access                     = "Allow"
-      source_port_range          = "*"
-    }
-    AllowAzureLoadBalancerInbound = {
-      priority                   = 140
-      protocol                   = "Tcp"
-      destination_port_range     = "443"
-      destination_port_ranges    = null
-      source_address_prefix      = "AzureLoadBalancer"
-      destination_address_prefix = "*"
-      direction                  = "Inbound"
-      access                     = "Allow"
-      source_port_range          = "*"
-    }
-    AllowBastionHostCommunication = {
-      priority                   = 150
-      protocol                   = "*"
-      destination_port_range     = null
-      destination_port_ranges    = ["8080", "5701"]
-      source_address_prefix      = "VirtualNetwork"
-      destination_address_prefix = "VirtualNetwork"
-      direction                  = "Inbound"
-      access                     = "Allow"
-      source_port_range          = "*"
-    }
-    DenyAllInbound = {
-      priority                   = 4096
-      protocol                   = "*"
-      destination_port_range     = "*"
-      destination_port_ranges    = null
-      source_address_prefix      = "*"
-      destination_address_prefix = "*"
-      direction                  = "Inbound"
-      access                     = "Deny"
-      source_port_range          = "*"
-    }
-    AllowSshRdpOutbound = {
-      priority                   = 100
-      protocol                   = "*"
-      destination_port_range     = null
-      destination_port_ranges    = ["22", "3389"]
-      source_address_prefix      = "*"
-      destination_address_prefix = "VirtualNetwork"
-      direction                  = "Outbound"
-      access                     = "Allow"
-      source_port_range          = "*"
-    }
-    AllowAzureCloudOutbound = {
-      priority                   = 110
-      protocol                   = "Tcp"
-      destination_port_range     = "443"
-      destination_port_ranges    = null
-      source_address_prefix      = "*"
-      destination_address_prefix = "AzureCloud"
-      direction                  = "Outbound"
-      access                     = "Allow"
-      source_port_range          = "*"
-    }
-    AllowBastionCommunication = {
-      priority                   = 120
-      protocol                   = "*"
-      destination_port_range     = null
-      destination_port_ranges    = ["8080", "5701"]
-      source_address_prefix      = "VirtualNetwork"
-      destination_address_prefix = "VirtualNetwork"
-      direction                  = "Outbound"
-      access                     = "Allow"
-      source_port_range          = "*"
-    }
-    AllowHttpOutbound = {
-      priority                   = 130
-      protocol                   = "*"
-      destination_port_range     = "80"
-      destination_port_ranges    = null
-      source_address_prefix      = "*"
-      destination_address_prefix = "Internet"
-      direction                  = "Outbound"
-      access                     = "Allow"
-      source_port_range          = "*"
-    }
-    DenyAllOutbound = {
-      priority                   = 4096
-      protocol                   = "*"
-      destination_port_range     = "*"
-      destination_port_ranges    = null
-      source_address_prefix      = "*"
-      destination_address_prefix = "*"
-      direction                  = "Outbound"
-      access                     = "Deny"
-      source_port_range          = "*"
+      rules = {
+        AllowHttpsInbound = {
+          priority                   = 120
+          protocol                   = "Tcp"
+          destination_port_range     = "443"
+          destination_port_ranges    = null
+          source_address_prefix      = "Internet"
+          destination_address_prefix = "*"
+          direction                  = "Inbound"
+          access                     = "Allow"
+          source_port_range          = "*"
+        }
+        AllowGatewayManagerInbound = {
+          priority                   = 130
+          protocol                   = "Tcp"
+          destination_port_range     = "443"
+          destination_port_ranges    = null
+          source_address_prefix      = "GatewayManager"
+          destination_address_prefix = "*"
+          direction                  = "Inbound"
+          access                     = "Allow"
+          source_port_range          = "*"
+        }
+        AllowAzureLoadBalancerInbound = {
+          priority                   = 140
+          protocol                   = "Tcp"
+          destination_port_range     = "443"
+          destination_port_ranges    = null
+          source_address_prefix      = "AzureLoadBalancer"
+          destination_address_prefix = "*"
+          direction                  = "Inbound"
+          access                     = "Allow"
+          source_port_range          = "*"
+        }
+        AllowBastionHostCommunication = {
+          priority                   = 150
+          protocol                   = "*"
+          destination_port_range     = null
+          destination_port_ranges    = ["8080", "5701"]
+          source_address_prefix      = "VirtualNetwork"
+          destination_address_prefix = "VirtualNetwork"
+          direction                  = "Inbound"
+          access                     = "Allow"
+          source_port_range          = "*"
+        }
+        DenyAllInbound = {
+          priority                   = 4096
+          protocol                   = "*"
+          destination_port_range     = "*"
+          destination_port_ranges    = null
+          source_address_prefix      = "*"
+          destination_address_prefix = "*"
+          direction                  = "Inbound"
+          access                     = "Deny"
+          source_port_range          = "*"
+        }
+        AllowSshRdpOutbound = {
+          priority                   = 100
+          protocol                   = "*"
+          destination_port_range     = null
+          destination_port_ranges    = ["22", "3389"]
+          source_address_prefix      = "*"
+          destination_address_prefix = "VirtualNetwork"
+          direction                  = "Outbound"
+          access                     = "Allow"
+          source_port_range          = "*"
+        }
+        AllowAzureCloudOutbound = {
+          priority                   = 110
+          protocol                   = "Tcp"
+          destination_port_range     = "443"
+          destination_port_ranges    = null
+          source_address_prefix      = "*"
+          destination_address_prefix = "AzureCloud"
+          direction                  = "Outbound"
+          access                     = "Allow"
+          source_port_range          = "*"
+        }
+        AllowBastionCommunication = {
+          priority                   = 120
+          protocol                   = "*"
+          destination_port_range     = null
+          destination_port_ranges    = ["8080", "5701"]
+          source_address_prefix      = "VirtualNetwork"
+          destination_address_prefix = "VirtualNetwork"
+          direction                  = "Outbound"
+          access                     = "Allow"
+          source_port_range          = "*"
+        }
+        AllowHttpOutbound = {
+          priority                   = 130
+          protocol                   = "*"
+          destination_port_range     = "80"
+          destination_port_ranges    = null
+          source_address_prefix      = "*"
+          destination_address_prefix = "Internet"
+          direction                  = "Outbound"
+          access                     = "Allow"
+          source_port_range          = "*"
+        }
+        DenyAllOutbound = {
+          priority                   = 4096
+          protocol                   = "*"
+          destination_port_range     = "*"
+          destination_port_ranges    = null
+          source_address_prefix      = "*"
+          destination_address_prefix = "*"
+          direction                  = "Outbound"
+          access                     = "Deny"
+          source_port_range          = "*"
+        }
+      }
     }
   }
 }

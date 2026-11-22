@@ -15,7 +15,7 @@ Flask と Tailwind CSS を使用して構築されたモダンなデザインの
   - Python 3.12.4
   - Flask 3.1.0
   - Flask-SQLAlchemy 3.1.1
-  - MySQL 8.0
+  - MySQL 8.4
   - SQLite
 
 - フロントエンド
